@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>金融服务治理平台</title>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<style type="text/css">
+	.btn-group{
+		padding:0;
+	}
+	.col-md-6{
+		padding-right:0；
+	}
+</style>
+</head>
+<link rel="stylesheet" type="text/css" href="css/style.css?vr=137">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="">金融服务治理平台</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="main-menu-li active">
+					   <a href="javascript:;" id="knowledgeManager" class="main-menu">服务治理策略</a>
+					</li>
+					<li class="main-menu-li">
+					   <a href="javascript:;"	id="applicationManager" class="main-menu">服务治理方案</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="wrapper">
+		<div id="main" class="container">
+		</div>
+	</div>
+	<div class="modal fade" id="knowledgeModal" tabindex="-1" role="dialog" aria-labelledby="knowledgeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content" style="width:900px;">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title">
+						添加策略
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="knowledgeForm">
+						<input type="hidden" id="knowledgeSubType" value="" />
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">策略名</label>
+							<div class="col-sm-5">
+								<input type="text" class="col-sm-6 form-control" id="knowledgeStrategyName" />
+							</div>
+							<label class="col-sm-4 clue">只能为数字和英文字母，且以英文开头</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">策略描述</label>
+							<div class="col-sm-5">
+								<input type="text" class="form-control" id="knowledgeStrategyDesc" />
+							</div>
+							<label class="col-sm-4 clue">策略的中文描述</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">数据过期时间</label>
+							<div class="col-sm-5">
+								<input type="text" class="form-control" id="knowledgeStrategyExpi" />
+							</div>
+							<label class="col-sm-4 clue">单位为秒,表示策略产生的数据保存时间</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">启用</label>
+							<div class="col-sm-5" style="margin-top: 4px;">
+									<input type="radio" name="knowledgeStatus"  value="1" checked />是
+									<input type="radio" name="knowledgeStatus"  value="0" />否
+							</div>
+						</div>
+						<div class="form-group form-group-sm">
+							<div class="col-sm-1"></div>
+							<div class="col-sm-11">
+								<button type="button" id="addTrigger4AIBtn" class="btn btn-success btn-sm">添加机器学习子策略</button>
+								<button type="button" id="addTrigger4TABtn" class="btn btn-success btn-sm">添加简单文本子策略</button>
+							</div>
+						</div>
+						<div class="form-group form-group-sm">
+							<div class="col-sm-1"></div>
+							<div class="col-sm-10">
+								<div class="row">
+								    <table class="table table-striped triggerListTable">
+										<thead>
+									        <tr>
+									          <th style="width: 100px;">子策略名</th>
+									          <th>sql</th>
+											  <th style="width: 40px;">op</th>
+											  <th>value</th>
+											  <th style="width: 125px;">治理方案</th>
+											  <th style="width: 100px;">持久化知识</th>
+									          <th style="width: 95px;">操作</th>
+									        </tr>
+								      	</thead>
+										<tbody id="triggerListtbody">
+								      	</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						
+						<!-- <div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">持久化数据</label>
+							<div class="col-sm-5" style="margin-top: 4px;">
+									<input type="radio" name="persistentStatus"  value="1" checked />是
+									<input type="radio" name="persistentStatus"  value="0" />否
+							</div>
+							<label class="col-sm-4 clue" id="persistentStatusDesc"></label>
+						</div> -->
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="knowledgeModalSubBtn">
+						提交更改
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	
+	<div class="modal fade" id="triggerModal4AI" tabindex="-1" role="dialog" aria-labelledby="triggerModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title">
+						机器学习策略
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="triggerForm">
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">子策略名</label>
+							<div class="col-sm-5">
+								<input type="text" class="col-sm-6 form-control" id="triggerKey" />
+							</div>
+							<!-- <label class="col-sm-4 clue">用于判断是否触发应用的key,*表示任意key</label> -->
+						</div>
+						<!-- <div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">sql</label>
+							<div class="col-sm-5">
+								<input type="text" class="col-sm-6 form-control" id="sql" />
+							</div>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">应用条件操作符号</label>
+							<div class="col-sm-5">
+								<select class="form-control" id="triggerOpe">
+								</select>
+							</div>
+							<label class="col-sm-4 clue">用于判断是否触发应用的操作符,包括<、>、=、>=、<=</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">应用条件触发闸值</label>
+							<div class="col-sm-5">
+								<input type="text" class="form-control" id="triggerVal" />
+							</div>
+							<label class="col-sm-4 clue">用于判断是否触发应用的value阀值</label>
+						</div>-->
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">数据分析方案</label>
+							<div class="col-sm-5">
+								<select class="form-control" id="">
+									<option>log分类</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">治理方案</label>
+							<div class="col-sm-5">
+								<select class="form-control" id="triggerApp">
+								</select>
+							</div>
+						</div>
+						<div id="persistentSelect">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="triggerSubmitBtn4AI">
+						提交更改
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<div class="modal fade" id="triggerModal4TA" tabindex="-1" role="dialog" aria-labelledby="triggerModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title">
+						简单文本策略
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="triggerForm">
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">子策略名</label>
+							<div class="col-sm-5">
+								<input type="text" class="col-sm-6 form-control" id="triggerKey" />
+							</div>
+							<!-- <label class="col-sm-4 clue">用于判断是否触发应用的key,*表示任意key</label> -->
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">sql</label>
+							<div class="col-sm-5">
+								<input type="text" class="col-sm-6 form-control" id="sql" />
+							</div>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">应用条件操作符号</label>
+							<div class="col-sm-5">
+								<select class="form-control" id="triggerOpe">
+								</select>
+							</div>
+							<label class="col-sm-4 clue">用于判断是否触发应用的操作符,包括<、>、=、>=、<=</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">应用条件触发闸值</label>
+							<div class="col-sm-5">
+								<input type="text" class="form-control" id="triggerVal" />
+							</div>
+							<label class="col-sm-4 clue">用于判断是否触发应用的value阀值</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">治理方案</label>
+							<div class="col-sm-5">
+								<select class="form-control" id="triggerApp">
+								</select>
+							</div>
+						</div>
+						<div id="persistentSelect">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="triggerSubmitBtn4TA">
+						提交更改
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<div class="modal fade" id="applicationModal" tabindex="-1" role="dialog" aria-labelledby="applicationModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title">
+						添加服务治理方案
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="applicationForm">
+						<input type="hidden" id="applicationSubType" value="" />
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">方案名</label>
+							<div class="col-sm-5">
+								<input type="text" class="col-sm-6 form-control" id="applicationStrategyName" />
+							</div>
+							<label class="col-sm-4 clue">只能为数字、英文字母、-、_</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">说明</label>
+							<div class="col-sm-5">
+								<input type="text" class="form-control" id="applicationStrategyDesc" />
+							</div>
+							<label class="col-sm-4 clue">方案的中文描述</label>
+						</div>
+						<div class="form-group form-group-sm">
+							<label class="col-sm-3 control-label">方案执行命令</label>
+							<div class="col-sm-5">
+								<input type="text" class="form-control" id="applicationStrategyComm" />
+							</div>
+							<label class="col-sm-4 clue">方案执行命令，相当于回调</label>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="applicationModalSubBtn">
+						提交更改
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<script id="triggerModalPersistentSelectTmpl" type="text/x-jquery-tmpl">
+		<div class="form-group form-group-sm">
+			<label class="col-sm-3 control-label">持久化知识</label>
+				<div class="col-sm-5" style="margin-top: 4px;">
+					{{if persistent == 1}}
+						<input type="radio" name="persistent"  value="1" checked/>是
+						<input type="radio" name="persistent"  value="0" />否
+					{{else}}
+						<input type="radio" name="persistent"  value="1" />是
+						<input type="radio" name="persistent"  value="0" checked/>否
+					{{/if}}
+				</div>
+			<label class="col-sm-4 clue" id="persistentDesc"></label>
+		</div>
+	</script>
+	<script id="strategyMainTmpl" type="text/x-jquery-tmpl">
+	  <div class="row">
+	    <button id="{{if stype == 1}}addKnowledgeBtn{{else}}addApplicationBtn{{/if}}" type="button" class="btn btn-success btn addStrategyBtn">添加</button>
+	  </div>
+	  <div class="row">
+	    <table class="table table-striped">
+	      <thead>
+	        <tr>
+	          <th>
+						{{if stype == 1}}
+							策略名
+						{{else}}
+							方案名
+						{{/if}}
+						</th>
+						{{if stype == 1}}
+							<th>状态</th>
+						{{/if}}
+						<th>修改时间</th>
+	          <th>操作</th>
+	        </tr>
+	      </thead>
+				<tbody>
+				{{each(i,stra) data.strategy}}
+					<tr>
+	          <td class="strategyName">${stra.key}</td>
+						{{if stype == 1}}
+						<td>
+							{{if stra.status == 1}}
+								启用
+							{{else}}
+							  未启用
+							{{/if}}
+						</td>
+						{{/if}}
+						<td>
+							${stra.opTime}
+						</td>
+	          <td>
+	            <button type="button" class="btn btn-primary btn-xs {{if stype == 1}}modKnowledgeBtn{{else}}modApplicationBtn{{/if}}">修改</button>
+						{{if stype == 1}}
+							<button type="button" class="btn btn-warning btn-xs delKnowledgeBtn">删除</button>
+							<button type="button" class="btn btn-info btn-xs showChartBtn">查看图表</button>
+						{{/if}}
+						</td>
+	        </tr>
+				{{/each}}
+	      </tbody>
+	    </table>
+	  </div>
+	  <div class="row">
+	    <div class="col-md-1">
+	    </div>
+	    <div class="col-md-9">
+	      <nav id="strategyPage">
+	        <ul class="pagination right">
+					{{each(i,prop) $item.makeArrayForEach("poet",$data.data.totalPageNumber)}}
+						<li class="{{if data.currentPageNumber == (i+1)}}active{{/if}}">
+							<a data-index="${i+1}" href="javascript:;" class="{{if stype == 1}}knowlegePaginationBtn{{else}}applicationPaginationBtn{{/if}}">
+								${i+1}
+							</a>
+						</li>
+					{{/each}}
+	        </ul>
+	      </nav>
+	    </div>
+	  </div>
+	</script>
+	<script id="triggerListTmpl" type="text/x-jquery-tmpl">
+		{{each(i,triggers) appStrategyTriggers}}
+		<tr>
+			<td class="triggerKey">${triggers.name}</td>
+			<td class="sql">${triggers.sql}</td>
+			<td class="triggerOpe" data-op="${triggers.op}">${triggers.op}</td>
+			<td class="triggerVal">${triggers.value}</td>
+			<td class="triggerApp">${triggers.appStrategyName}</td>
+			<td class="persistent">${triggers.persistent}</td>
+			<td>
+				<button type="button" class="btn btn-info btn-xs modTriggerBtn">编辑</button>
+				<button type="button" class="btn btn-warning btn-xs delTriggerBtn">删除</button>
+			</td>
+		</tr>
+		{{/each}}
+	</script>
+	<!--  {{if triggers.persistent == 1}}
+				<td class="persistent">是</td>
+			{{else}}
+				<td class="persistent">否</td>
+			{{/if}}-->
+    <script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/jquery.tmpl.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/strategyHome.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+body{
+   margin: 0px;
+   padding: 60px 0 0 0;
+   //text-align: center;
+   background: #FFF;
+   color: #000;
+   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+
+}
+#wrapper{
+  width:100%;
+}
+#main{
+  width:70%;
+  margin:0 auto;
+  height:500px;
+}
+#strategyPage{
+
+  float: right;
+}
+
+.addStrategyBtn{
+  margin-top: 20px;
+}
+
+.clue{
+  text-align: left;
+  margin-left: -23px;
+  padding-top: 5px;
+  font-size: 12px;
+  color: red;
+}
+.triggerListTable{
+	 word-wrap: break-word;
+	 word-break: break-all;"
+}

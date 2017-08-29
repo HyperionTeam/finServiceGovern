@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>策略平台配置中心</title>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<style type="text/css">
+.btn-group {
+	padding: 0;
+}
+
+.col-md-6 {
+	padding-right: 0；
+}
+</style>
+</head>
+<link rel="stylesheet" type="text/css" href="css/style.css?vr=137">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="">移动统计配置中心</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="main-menu-li"><a href="statisConfig.html"
+						id="statisManager" class="main-menu">数据采集配置</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-4">
+			
+				<div class="input-group form-group">
+				<span class="input-group-addon" style="width:200px">app启动时间阀值:</span> 
+				<input type="text" id="app_launch_time" class="form-control">
+				<span class="input-group-addon">毫秒</span> 
+			</div>
+			
+			<div class="input-group form-group">
+				<span class="input-group-addon" style="width:200px">native页面加载时间阀值:</span> 
+				<input type="text" id="native_page_loadtime" class="form-control">
+				<span class="input-group-addon">毫秒</span> 
+			</div>
+			
+			<div class="input-group form-group">
+				<span class="input-group-addon" style="width:200px">rn页面加载时间阀值:</span> 
+				<input type="text" id="rn_page_loadtime" class="form-control">
+				<span class="input-group-addon">毫秒</span> 
+			</div>
+			<div lass="input-group form-group"><button id="submit_modify" class="btn btn-primary">提交修改</button></div>
+			
+		</div>
+	</div>
+
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<!-- <script src="js/handlebars-v4.0.5.js"></script> -->
+	<script src="js/jquery.tmpl.js">
+		<script src="js/jquery-ui.min.js">
+	</script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/statisConfig.js"></script>
+
+</body>
+</html>

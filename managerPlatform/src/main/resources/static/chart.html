@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>金融服务治理平台</title>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<style type="text/css">
+    .btn-group{
+        padding:0;
+    }
+    .col-md-6{
+        padding-right:0；
+    }
+</style>
+</head>
+<link rel="stylesheet" type="text/css" href="css/rome.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="javascript:void(0);" id="titleNavbar">金融服务治理平台</a>
+            </div>
+        </div>
+    </nav>
+    <div id="wrapper">
+        <div id="main" class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">策略名</label>
+                    <select class="form-control" id="knowledgeStrategyName">
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">appID</label>
+                    <select class="form-control" id="appID">
+                    	<option>所有appID</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">os</label>
+                    <select class="form-control" id="os">
+                    	<option>所有os</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">版本号</label>
+                    <select class="form-control" id="appVersion">
+                    	<option>所有版本号</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">子策略名</label>
+                    <select class="form-control" id="triggerStrategyName">
+                        <option>所有子策略</option>
+
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">开始时间</label>
+                    <div>
+                        <input type="text" class="col-sm-6 form-control input" id="beginTime" readonly="true"/>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">结束时间</label>
+                    <div>
+                        <input type="text" class="col-sm-6 form-control input" id="endTime" readonly="true"/>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                	<label class="control-label"></label> 
+                	<div>
+                		<button id="getStatBtn" type="button" class="btn btn-success btn">确定</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="chartDiv">
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.tmpl.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/highcharts.js"></script>
+    <script src="js/rome.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/strategychart.js"></script>
+
+</body>
+</html>
