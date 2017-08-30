@@ -278,7 +278,7 @@ $(document).ready(function () {
 
     function init() {
         var storage = window.localStorage;
-        var strategyName = storage.getItem("strategyName")
+        var strategyName = storage.getItem("strategyName");
         var curDate = new Date();
         var curMinute = curDate.getMinutes();
         var adjustSeconds = curDate.getTime() + 1800000;
