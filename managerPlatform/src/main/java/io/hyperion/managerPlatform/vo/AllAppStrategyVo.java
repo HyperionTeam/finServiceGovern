@@ -49,6 +49,8 @@ public class AllAppStrategyVo {
 	public static class AllAppStrategy {
 		private String key;
 		private String opTime;
+		private int type;	// 1-数据分析方案，0-治理方案
+		private String description;
 //		public String getName() {
 //			return name;
 //		}
@@ -68,5 +70,18 @@ public class AllAppStrategyVo {
 		public void setOpTime(String opTime) {
 			this.opTime = opTime;
 		}
+		public int getType() {
+			return type;
+		}
+		public void setType(int type) {
+			this.type = type;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		
 	}
 }

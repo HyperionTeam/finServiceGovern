@@ -127,9 +127,9 @@ public class KnowledgeStrategyConfigDTO {
 		private String sql;	// sql语句
 		private String op;	// 用于判断是否触发应用的操作符，包括<、>、=、>=、<=
 		private Object value;	// 用于判断是否触发应用的value阀值
-		private String appStrategyName;	// 应用策略名
+		private String dataStrategyName;	// 数据分析方案名
+		private String appStrategyName;	// 治理方案名
 		private int persistent;	//是否持久化：0表示不持久化，1表示持久化
-		private int type;	// 知识策略类型
 		public String getOp() {
 			return op;
 		}
@@ -141,6 +141,13 @@ public class KnowledgeStrategyConfigDTO {
 		}
 		public void setValue(Object value) {
 			this.value = value;
+		}
+		
+		public String getDataStrategyName() {
+			return dataStrategyName;
+		}
+		public void setDataStrategyName(String dataStrategyName) {
+			this.dataStrategyName = dataStrategyName;
 		}
 		public String getAppStrategyName() {
 			return appStrategyName;
@@ -165,12 +172,6 @@ public class KnowledgeStrategyConfigDTO {
 		}
 		public void setPersistent(int persistent) {
 			this.persistent = persistent;
-		}
-		public int getType() {
-			return type;
-		}
-		public void setType(int type) {
-			this.type = type;
 		}
 	}
 

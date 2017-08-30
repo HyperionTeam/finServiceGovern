@@ -2,6 +2,7 @@ package io.hyperion.managerPlatform.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -47,10 +48,7 @@ import net.sf.jsqlparser.util.TablesNamesFinder;
 @Controller
 public class StrategyConfigController {
 	
-	private final Logger logger = Logger.getLogger(getClass());
-
-	private final static int TYPE_AI = 1; // 机器学习分析策略
-	private final static int TYPE_TA = 2; // 简单文本分析策略
+	private final Logger logger = Logger.getLogger(getClass());	
 	
 	private final static String REGX_NAME = "^[A-Za-z0-9\\-_]+$"; //正则表达式，匹配字母、数字、-和_
 	private final static String REGX_STRATEGY_KEY = "^[A-Za-z]+[A-Za-z0-9]*$"; //正则表达式，匹配字母、数字、-和_
@@ -484,6 +482,8 @@ public class StrategyConfigController {
 					AllAppStrategy allAppStrategy = new AllAppStrategy();
 					allAppStrategy.setKey(appStrategyConfig.getKey());
 					allAppStrategy.setOpTime(appStrategyConfig.getOpTime());
+					allAppStrategy.setType(appStrategyConfig.getType());
+					allAppStrategy.setDescription(appStrategyConfig.getDescription());
 					appStrategies.add(allAppStrategy);
 				}
 			}
@@ -540,9 +540,9 @@ public class StrategyConfigController {
 			String sql = appStrategyTrigger.getSql();
 			String op = appStrategyTrigger.getOp();
 			Object value = appStrategyTrigger.getValue();
+			String dataStrategyName = appStrategyTrigger.getDataStrategyName();
 			String appStrategyName = appStrategyTrigger.getAppStrategyName();
 			Integer persistent = appStrategyTrigger.getPersistent();
-			int type = appStrategyTrigger.getType();
 			if(StringUtils.isBlank(name) || StringUtils.isBlank(sql) || StringUtils.isBlank(op) || StringUtils.isBlank(value.toString()) ||
 			   StringUtils.isBlank(appStrategyName) || (persistent != Const.DISABLE && persistent != Const.ENABLE)){
 				logger.error("app strategy config fail");
@@ -558,7 +558,7 @@ public class StrategyConfigController {
 			}
 			nameList.add(name);
 			
-			if (type == TYPE_TA) {
+			if (Arrays.asList(Const.needCheckSQLStrategyList).contains(dataStrategyName)) {
 				// 检查sql
 				Select select = SQLEngine.parse(sql);
 				if(select == null) {

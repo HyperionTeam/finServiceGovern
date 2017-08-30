@@ -27,9 +27,11 @@ import io.hyperion.managerPlatform.dto.KnowledgeStrategyConfigDTO;
 import io.hyperion.managerPlatform.dto.KnowledgeStrategyConfigDTO.AppStrategyTrigger;
 import io.hyperion.managerPlatform.dto.KnowledgeStrategyStatDTO;
 import io.hyperion.managerPlatform.utils.CommonUtil;
+import io.hyperion.managerPlatform.utils.Const;
 import io.hyperion.managerPlatform.utils.ResponseUtil;
 import io.hyperion.managerPlatform.utils.ResultInfo;
 import io.hyperion.managerPlatform.utils.StrategyUtil;
+import io.hyperion.managerPlatform.vo.GetAllTriggersByKeyVo;
 import io.hyperion.managerPlatform.vo.StrategyStatVo;
 import io.hyperion.managerPlatform.vo.StrategyStatVo.CountVo;
 import io.hyperion.managerPlatform.vo.StrategyStatVo.FieldVo;
@@ -313,10 +315,18 @@ public class StrategyStatController {
 		
 		try {
 			KnowledgeStrategyConfigDTO knowledgeStrategyConfigDTO = knowledgeStrategyConfigDAO.getConfigByKey(key);
-			Set<String> allTriggers = new HashSet<String>();
+			List<GetAllTriggersByKeyVo> allTriggers = new ArrayList<GetAllTriggersByKeyVo>();
 			if (knowledgeStrategyConfigDTO.getAppStrategyTriggers() != null) {
 				for (AppStrategyTrigger appStrategyTrigger : knowledgeStrategyConfigDTO.getAppStrategyTriggers()) {
-					allTriggers.add(appStrategyTrigger.getName());
+					GetAllTriggersByKeyVo triggerInfo = new GetAllTriggersByKeyVo();
+					triggerInfo.setName(appStrategyTrigger.getName());
+					int chart = 0;
+					// 如果数据分析方案需要展现的是图表
+					if(Arrays.asList(Const.needShowChartStrategyList).contains(appStrategyTrigger.getDataStrategyName())) {
+						chart = 1;
+					}
+					triggerInfo.setChart(chart);
+					allTriggers.add(triggerInfo);
 				}
 			}
 
@@ -350,6 +360,87 @@ public class StrategyStatController {
 			return new ResultInfo(ResponseUtil.success_code, data);
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			return new ResultInfo(ResponseUtil.faile_code);
+		}
+	}
+	
+	/**
+	 * 根据策略key、appID、os、appVersion、triggerName获取统计数据
+	 * @param key
+	 * @param appID
+	 * @param os
+	 * @param appVersion
+	 * @param triggerName
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	@RequestMapping("/getDataListByKeyAndTriggerAndBaseInfo")
+	@ResponseBody
+	public ResultInfo getDataListByKeyAndTriggerAndBaseInfo(String key, String appID, String os, String appVersion, String triggerName, String beginTime, String endTime) {
+		
+		try {
+			
+			if(StringUtils.isBlank(key) || StringUtils.isBlank(beginTime) || StringUtils.isBlank(endTime)) {
+				return new ResultInfo(ResponseUtil.param_error_code);
+			}
+			
+			String adjustBeginTime = CommonUtil.getAdjustTime(beginTime);
+			String adjustEndTime = CommonUtil.getAdjustTime(endTime);
+
+			StrategyStatVo strategyStatVo = new StrategyStatVo();
+			List<FieldVo> fieldList = new ArrayList<FieldVo>();
+			strategyStatVo.setKey(key);
+			
+			List<KnowledgeStrategyStatDTO> knowledgeStrategyStats = knowledgeStrategyStatDAO.getStatByKeyAndTriggerAndBaseInfo(key, appID, os, appVersion, triggerName, adjustBeginTime, adjustEndTime);
+			//用一个map来保存统计信息，其中key为时间,value为统计数据
+			 Map<String, Object> knowledgeStrategyStatMap = new HashMap<String, Object>();
+			//如果knowledgeStrategyStats为空，则没有数据，所有返回的时间点的数据都为0,不需要往knowledgeStrategyStatMap里面添加数据
+	        for (KnowledgeStrategyStatDTO knowledgeStrategyStat : knowledgeStrategyStats) {
+	        	String time = knowledgeStrategyStat.getTime();
+	        	String newValue = knowledgeStrategyStat.getValue().toString();
+	        	// 如果newValue是非数字，则置为0
+	        	if(!StrategyUtil.isNumber(newValue)) {
+	        		newValue = "0";
+	        	}
+	        	Object oldValue = knowledgeStrategyStatMap.get(time);
+	        	if(oldValue != null) {
+	        		knowledgeStrategyStatMap.put(time, Float.valueOf(newValue) + Float.valueOf(oldValue.toString()));
+	        	} else {
+	        		knowledgeStrategyStatMap.put(time, Float.valueOf(newValue));
+				}
+			}
+            
+            List<CountVo> countList = new LinkedList<CountVo>();
+            
+            while(CommonUtil.getTimeInterVal(adjustEndTime, adjustBeginTime) >= 0) {
+            	CountVo countVo = new CountVo();
+            	countVo.setTime(adjustEndTime);
+            	
+            	//如果map中存在该时间点，值获取其值，如果没有改时间点，则其值为0
+            	if(knowledgeStrategyStatMap.containsKey(adjustEndTime) && knowledgeStrategyStatMap.get(adjustEndTime) != null){
+            		countVo.setValue(knowledgeStrategyStatMap.get(adjustEndTime));
+            	}else {
+            		countVo.setValue((float) 0);
+            	}
+            	countList.add(countVo);
+            	adjustEndTime = CommonUtil.get30MinuteAgo(adjustEndTime);
+            }
+            
+            FieldVo fieldVo = new FieldVo();
+            String chartFieldName = (triggerName != null)?triggerName:"所有子策略"; 
+            fieldVo.setField(chartFieldName); 
+            fieldVo.setCountList(countList);
+            
+            fieldList.add(fieldVo);
+			
+            strategyStatVo.setFieldList(fieldList);
+
+			return new ResultInfo(ResponseUtil.success_code, strategyStatVo);
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.info(e);
 			e.printStackTrace();
 			return new ResultInfo(ResponseUtil.faile_code);
 		}

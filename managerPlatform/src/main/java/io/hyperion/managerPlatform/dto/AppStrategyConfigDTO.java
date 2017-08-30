@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 @Document(collection = "appStrategyConfig")
 @Component("AppStrategyConfigDTO")
 @CompoundIndexes({
-//    @CompoundIndex(background=true,unique=true,name ="app_strategy_key_uidx", def ="{'key': -1}")//////////////去掉注释，且修改数据库
+    @CompoundIndex(background=true,unique=true,name ="app_strategy_key_uidx", def ="{'key': -1}")
 })
 public class AppStrategyConfigDTO {
 	
 	private String _id;
 	
 	private String key;	//策略名，全局唯一
-//	private String name;	//策略名，全局唯一/////待废弃
 	private String description;	//策略说明
 	private String command;	//策略执行命令，相当于回调
 	private String opTime;	//最近操作时间
+	private int type;	// 1-数据分析方案，0-治理方案
 	public String get_id() {
 		return _id;
 	}
@@ -58,6 +58,12 @@ public class AppStrategyConfigDTO {
 	}
 	public void setKey(String key) {
 		this.key = key;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 
