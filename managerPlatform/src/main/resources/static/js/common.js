@@ -6,6 +6,7 @@
 //var hostUri = "http://ff-app-sg.paic.com.cn/webii"
 var hostUri = 'http://'+window.location.host;
 var getStatByKeyAndTriggerAndBaseInfoUrl = hostUri + "/strategy/getStatByKeyAndTriggerAndBaseInfo";
+var getDataListByKeyAndTriggerAndBaseInfoUrl = hostUri + "/strategy/getDataListByKeyAndTriggerAndBaseInfo";
 var getStatByKeyUrl = hostUri + "/strategy/getStatByKey";
 var getStatByKeyAndFieldUrl = hostUri + "/strategy/getStatByKeyAndField";
 var getAllKnowledeNameUrl = hostUri + "/strategy/getAllPersistentedStrategy";

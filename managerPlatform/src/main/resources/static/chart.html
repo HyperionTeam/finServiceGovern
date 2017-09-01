@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="col-sm-3">
-                	<label class="control-label"></label> 
+                	<label class="control-label"></label>
                 	<div>
                 		<button id="getStatBtn" type="button" class="btn btn-success btn">确定</button>
                     </div>
@@ -79,13 +79,95 @@
             </div>
             <div class="row">
                 <div id="chartDiv">
-                    
+
                 </div>
             </div>
 
         </div>
     </div>
-    
+
+    <div class="modal fade" id="triggerModal4AI" tabindex="-1" role="dialog" aria-labelledby="triggerModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        再训练
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="triggerForms">
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label">真实结果</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="col-sm-6 form-control" id="triggerKeys"/>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-8 col-sm-offset-3">如果预测的结果与实际结果有出入,请输入正确的结果,我们将根据正确的结果对模型进行二次训练,提高预测准确率</label>
+
+                        </div>
+                        <div id="persistentSelects">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="triggerSubmitBtn4AI">
+                        提交
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <script id="triggerListTmpl" type="text/x-jquery-tmpl">
+
+      <div class="row" style="margin-top: 20px;">
+          <div class="col-sm-12 col-md-12">
+            {{each(i,triggers) countList}}
+                <div class="thumbnail">
+                   <div class="row">
+                        <label class="col-sm-2 control-label" style="text-align: right;">原始数据:</label>
+                        <label class="col-sm-9 control-label">
+                        {{if triggers.sourceData.indexOf("http") != -1}}
+							<a href="${triggers.sourceData}" target="_blank">${triggers.sourceData}</a>
+						{{else}}
+						    ${triggers.sourceData}
+						{{/if}}
+                        </label>
+                   </div>
+                   <div class="row">
+                        <label class="col-sm-2 control-label" style="text-align: right;">分析结果:</label>
+                        <label class="col-sm-9 control-label">${triggers.dataResult}</label>
+                   </div>
+                   <div class="row">
+                        <label class="col-sm-2 control-label" style="text-align: right;">治理状态:</label>
+                        <label class="col-sm-9 control-label">${triggers.governStatus}</label>
+                   </div>
+                   <div class="row">
+                        <label class="col-sm-2 control-label" style="text-align: right;">治理结果:</label>
+                        <label class="col-sm-9 control-label">${triggers.governResult}</label>
+                   </div>
+                   <div class="row">
+                        <label class="col-sm-2 control-label" style="text-align: right;">接受时间:</label>
+                        <label class="col-sm-9 control-label">${triggers.time}</label>
+                   </div>
+
+                   <div class="row">
+                       <div class="col-sm-2 col-sm-offset-2">
+                		 <button type="button" class="btn-sm btn-info btn trainingbtn">再训练</button>
+                	   </div>
+                   </div>
+                </div>
+            {{/each}}
+          </div>
+      </div>
+
+    </script>
+
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/jquery.tmpl.js"></script>
     <script src="js/jquery-ui.min.js"></script>

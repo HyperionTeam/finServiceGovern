@@ -178,7 +178,7 @@ $(document).ready(function () {
         clearApplicationStrategyModal(false);
         $('#applicationSubType').val(0);
         $('#applicationModal').modal();
-    })
+    });
     $(document).on('click', '#knowledgeManager', function () {
         var returnData = ajaxMainData(1, 1, 20);
         if (returnData != undefined) {
@@ -186,7 +186,7 @@ $(document).ready(function () {
             changeMainHtml(returnData)
             tabActiveChange($(this))
         }
-    })
+    });
     $(document).on('click', '#applicationManager', function () {
         var returnData = ajaxMainData(2, 1, 20);
         if (returnData != undefined) {
@@ -450,6 +450,7 @@ $(document).ready(function () {
     });
 
 
+
     $(document).on('click', '.delTriggerBtn', function () {
         name = $(this).parent().parent().children('.triggerKey').html();
         var status = delConfirm("确认删除" + name + "?");
@@ -505,7 +506,7 @@ $(document).ready(function () {
                 triggerKey = $(list[i]).children('.triggerKey').html();
                 triggerApp = $(list[i]).children('.triggerApp').html();
                 strategyName = $(list[i]).children('.strategyName').html();
-                persistent = $(list[i]).children('.persistent').html();
+
                 var triRow = {};
                 if (strategyName == 'SQLAnalyser') {
                     triggerOpe = $(list[i]).data('op');
@@ -517,7 +518,7 @@ $(document).ready(function () {
                 }
                 triRow.name = triggerKey;
                 triRow.appStrategyName = triggerApp;
-                triRow.persistent = persistent;
+                triRow.persistent = 1;
                 triRow.dataStrategyName = strategyName;
                 triggers.push(triRow);
             }

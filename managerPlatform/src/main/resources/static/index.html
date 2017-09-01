@@ -55,7 +55,7 @@
                 <form class="form-horizontal" id="knowledgeForm">
                     <input type="hidden" id="knowledgeSubType" value=""/>
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">策略名</label>
+                        <label class="col-sm-3 control-label">数据源</label>
                         <div class="col-sm-5">
                             <input type="text" class="col-sm-6 form-control" id="knowledgeStrategyName"/>
                         </div>
@@ -85,9 +85,9 @@
                     <div class="form-group form-group-sm">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-11">
-                            <button type="button" id="addTrigger4AIBtn" class="btn btn-success btn-sm">添加机器学习子策略
+                            <button type="button" id="addTrigger4AIBtn" class="btn btn-success btn-sm">添加机器学习策略
                             </button>
-                            <button type="button" id="addTrigger4TABtn" class="btn btn-success btn-sm">添加子策略</button>
+                            <button type="button" id="addTrigger4TABtn" class="btn btn-success btn-sm">添加策略</button>
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
@@ -97,7 +97,7 @@
                                 <table class="table table-striped triggerListTable">
                                     <thead>
                                     <tr>
-                                        <th style="width: 100px;">子策略名</th>
+                                        <th style="width: 100px;">策略名</th>
                                         <th>数据分析方案</th>
                                         <th>治理方案</th>
                                         <th style="width: 100px;">持久化知识</th>
@@ -146,7 +146,7 @@
             <div class="modal-body">
                 <form class="form-horizontal" id="triggerForms">
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">子策略名</label>
+                        <label class="col-sm-3 control-label">策略名</label>
                         <div class="col-sm-5">
                             <input type="text" class="col-sm-6 form-control" id="triggerKeys"/>
                         </div>
@@ -210,13 +210,13 @@
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    编辑子策略
+                    编辑策略
                 </h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="triggerForm">
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">子策略名</label>
+                        <label class="col-sm-3 control-label">策略名</label>
                         <div class="col-sm-5">
                             <input type="text" class="col-sm-6 form-control" id="triggerKey"/>
                         </div>
@@ -276,7 +276,7 @@
                         <label class="col-sm-4 clue">只能为数字、英文字母、-、_</label>
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">方案</label>
+                        <label class="col-sm-3 control-label">方案类型</label>
                         <div class="col-sm-5">
                             <select class="form-control" id="applicationStrategyType">
                                 <option>数据分析方案</option>
@@ -364,7 +364,7 @@
 	        <tr>
 	          <th>
 						{{if stype == 1}}
-							策略名
+							数据源
 						{{else}}
 							方案名
 						{{/if}}
