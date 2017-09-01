@@ -543,9 +543,14 @@ public class StrategyConfigController {
 			String dataStrategyName = appStrategyTrigger.getDataStrategyName();
 			String appStrategyName = appStrategyTrigger.getAppStrategyName();
 			Integer persistent = appStrategyTrigger.getPersistent();
-			if(StringUtils.isBlank(name) || StringUtils.isBlank(sql) || StringUtils.isBlank(op) || StringUtils.isBlank(value.toString()) ||
-			   StringUtils.isBlank(appStrategyName) || (persistent != Const.DISABLE && persistent != Const.ENABLE)){
-				logger.error("app strategy config fail");
+			if(StringUtils.isBlank(name) || StringUtils.isBlank(appStrategyName) || 
+					(persistent != Const.DISABLE && persistent != Const.ENABLE)){
+				logger.error("app strategy config fail!");
+				return false;
+			}
+			if (Arrays.asList(Const.needCheckSQLStrategyList).contains(dataStrategyName) &&
+				(StringUtils.isBlank(sql) || StringUtils.isBlank(op) || StringUtils.isBlank(value.toString()))) {
+				logger.error("sql need param check fail!");
 				return false;
 			}
 			// 如果过期时间未到最小阀值，则不允许持久化

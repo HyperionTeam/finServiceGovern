@@ -22,16 +22,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import io.hyperion.managerPlatform.dao.KnowledgeStrategyBaseInfoDAO;
 import io.hyperion.managerPlatform.dao.KnowledgeStrategyConfigDAO;
 import io.hyperion.managerPlatform.dao.KnowledgeStrategyStatDAO;
+import io.hyperion.managerPlatform.dao.StrategyAnalysisSummaryDAO;
 import io.hyperion.managerPlatform.dto.KnowledgeStrategyBaseInfoDTO;
 import io.hyperion.managerPlatform.dto.KnowledgeStrategyConfigDTO;
 import io.hyperion.managerPlatform.dto.KnowledgeStrategyConfigDTO.AppStrategyTrigger;
 import io.hyperion.managerPlatform.dto.KnowledgeStrategyStatDTO;
+import io.hyperion.managerPlatform.dto.StrategyAnalysisSummaryDTO;
 import io.hyperion.managerPlatform.utils.CommonUtil;
 import io.hyperion.managerPlatform.utils.Const;
 import io.hyperion.managerPlatform.utils.ResponseUtil;
 import io.hyperion.managerPlatform.utils.ResultInfo;
 import io.hyperion.managerPlatform.utils.StrategyUtil;
 import io.hyperion.managerPlatform.vo.GetAllTriggersByKeyVo;
+import io.hyperion.managerPlatform.vo.StrategyAnalysisSummaryVo;
+import io.hyperion.managerPlatform.vo.StrategyAnalysisSummaryVo.Field4SASummaryVo;
 import io.hyperion.managerPlatform.vo.StrategyStatVo;
 import io.hyperion.managerPlatform.vo.StrategyStatVo.CountVo;
 import io.hyperion.managerPlatform.vo.StrategyStatVo.FieldVo;
@@ -42,12 +46,16 @@ public class StrategyStatController {
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	
+	private final static String ALL_STRATEGY_ITEM_NAME = "所有子策略";
+	
 	@Autowired
 	private KnowledgeStrategyStatDAO knowledgeStrategyStatDAO;
 	@Autowired
 	private KnowledgeStrategyConfigDAO knowledgeStrategyConfigDAO;
 	@Autowired
 	private KnowledgeStrategyBaseInfoDAO knowledgeStrategyBaseInfoDAO;
+	@Autowired
+	private StrategyAnalysisSummaryDAO strategyAnalysisSummaryDAO;
 	
 	/**
 	 * 根据策略key、appID、os、appVersion、triggerName获取统计数据
@@ -113,7 +121,7 @@ public class StrategyStatController {
             }
             
             FieldVo fieldVo = new FieldVo();
-            String chartFieldName = (triggerName != null)?triggerName:"所有子策略"; 
+            String chartFieldName = (triggerName != null)?triggerName:ALL_STRATEGY_ITEM_NAME; 
             fieldVo.setField(chartFieldName); 
             fieldVo.setCountList(countList);
             
@@ -367,7 +375,7 @@ public class StrategyStatController {
 	
 	/**
 	 * 根据策略key、appID、os、appVersion、triggerName获取统计数据
-	 * @param key
+	 * @param key 数据源
 	 * @param appID
 	 * @param os
 	 * @param appVersion
@@ -389,58 +397,25 @@ public class StrategyStatController {
 			String adjustBeginTime = CommonUtil.getAdjustTime(beginTime);
 			String adjustEndTime = CommonUtil.getAdjustTime(endTime);
 
-			StrategyStatVo strategyStatVo = new StrategyStatVo();
-			List<FieldVo> fieldList = new ArrayList<FieldVo>();
-			strategyStatVo.setKey(key);
+			StrategyAnalysisSummaryVo strategyVo = new StrategyAnalysisSummaryVo();
+			List<Field4SASummaryVo> fieldList = new ArrayList<Field4SASummaryVo>();
+			strategyVo.setKey(key);
 			
-			List<KnowledgeStrategyStatDTO> knowledgeStrategyStats = knowledgeStrategyStatDAO.getStatByKeyAndTriggerAndBaseInfo(key, appID, os, appVersion, triggerName, adjustBeginTime, adjustEndTime);
-			//用一个map来保存统计信息，其中key为时间,value为统计数据
-			 Map<String, Object> knowledgeStrategyStatMap = new HashMap<String, Object>();
-			//如果knowledgeStrategyStats为空，则没有数据，所有返回的时间点的数据都为0,不需要往knowledgeStrategyStatMap里面添加数据
-	        for (KnowledgeStrategyStatDTO knowledgeStrategyStat : knowledgeStrategyStats) {
-	        	String time = knowledgeStrategyStat.getTime();
-	        	String newValue = knowledgeStrategyStat.getValue().toString();
-	        	// 如果newValue是非数字，则置为0
-	        	if(!StrategyUtil.isNumber(newValue)) {
-	        		newValue = "0";
-	        	}
-	        	Object oldValue = knowledgeStrategyStatMap.get(time);
-	        	if(oldValue != null) {
-	        		knowledgeStrategyStatMap.put(time, Float.valueOf(newValue) + Float.valueOf(oldValue.toString()));
-	        	} else {
-	        		knowledgeStrategyStatMap.put(time, Float.valueOf(newValue));
-				}
-			}
-            
-            List<CountVo> countList = new LinkedList<CountVo>();
-            
-            while(CommonUtil.getTimeInterVal(adjustEndTime, adjustBeginTime) >= 0) {
-            	CountVo countVo = new CountVo();
-            	countVo.setTime(adjustEndTime);
-            	
-            	//如果map中存在该时间点，值获取其值，如果没有改时间点，则其值为0
-            	if(knowledgeStrategyStatMap.containsKey(adjustEndTime) && knowledgeStrategyStatMap.get(adjustEndTime) != null){
-            		countVo.setValue(knowledgeStrategyStatMap.get(adjustEndTime));
-            	}else {
-            		countVo.setValue((float) 0);
-            	}
-            	countList.add(countVo);
-            	adjustEndTime = CommonUtil.get30MinuteAgo(adjustEndTime);
-            }
-            
-            FieldVo fieldVo = new FieldVo();
-            String chartFieldName = (triggerName != null)?triggerName:"所有子策略"; 
+			List<StrategyAnalysisSummaryDTO> strategyAnalysisSummaries = strategyAnalysisSummaryDAO.getStatByKeyAndTriggerAndBaseInfo(key, appID, os, appVersion, triggerName, adjustBeginTime, adjustEndTime);
+                
+            Field4SASummaryVo fieldVo = new Field4SASummaryVo();
+            String chartFieldName = (triggerName != null)?triggerName:ALL_STRATEGY_ITEM_NAME; 
             fieldVo.setField(chartFieldName); 
-            fieldVo.setCountList(countList);
+            fieldVo.setCountList(strategyAnalysisSummaries);
             
             fieldList.add(fieldVo);
 			
-            strategyStatVo.setFieldList(fieldList);
+            strategyVo.setFieldList(fieldList);
 
-			return new ResultInfo(ResponseUtil.success_code, strategyStatVo);
+			return new ResultInfo(ResponseUtil.success_code, strategyVo);
 		} catch (Exception e) {
 			// TODO: handle exception
-			logger.info(e);
+			logger.error(e);
 			e.printStackTrace();
 			return new ResultInfo(ResponseUtil.faile_code);
 		}
