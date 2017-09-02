@@ -81,41 +81,41 @@ $(document).ready(function () {
             data['triggerName'] = triggerName;
         }
 
-        if (type == '1') {
-            var chartDataList = [];
-            $.ajax({
-                type: 'POST',
-                url: getStatByKeyAndTriggerAndBaseInfoUrl,
-                data: data,
-                dataType: 'json',
-                success: function (data) {
-                    var responseObj = eval(data);
-                    if (responseObj.code == 0) {
-                        var list = responseObj['data']['fieldList'];
-                        for (var i = 0; i < list.length; i++) {
-
-                            var keyAndField = list[i]['field'];
-
-                            var countList = list[i]['countList'];
-                            var dataList = new Array();
-                            for (var j = 0; j < countList.length; j++) {
-                                var value = countList[j]['value'];
-                                var time = countList[j]['time'];
-                                dataList.push([splitTimeToSeconds(time), value]);
-                            }
-                            var jsonObj = {
-                                name: keyAndField,
-                                data: dataList
-                            }
-                            chartDataList.push(jsonObj);
-                        }
-                    } else {
-                        alert("get All appData Error,Msg:" + responseObj.msg)
-                    }
-                    drawCharts(chartDataList);
-                }
-            });
-        } else {
+//        if (type == '1') {
+//            var chartDataList = [];
+//            $.ajax({
+//                type: 'POST',
+//                url: getStatByKeyAndTriggerAndBaseInfoUrl,
+//                data: data,
+//                dataType: 'json',
+//                success: function (data) {
+//                    var responseObj = eval(data);
+//                    if (responseObj.code == 0) {
+//                        var list = responseObj['data']['fieldList'];
+//                        for (var i = 0; i < list.length; i++) {
+//
+//                            var keyAndField = list[i]['field'];
+//
+//                            var countList = list[i]['countList'];
+//                            var dataList = new Array();
+//                            for (var j = 0; j < countList.length; j++) {
+//                                var value = countList[j]['value'];
+//                                var time = countList[j]['time'];
+//                                dataList.push([splitTimeToSeconds(time), value]);
+//                            }
+//                            var jsonObj = {
+//                                name: keyAndField,
+//                                data: dataList
+//                            }
+//                            chartDataList.push(jsonObj);
+//                        }
+//                    } else {
+//                        alert("get All appData Error,Msg:" + responseObj.msg)
+//                    }
+//                    drawCharts(chartDataList);
+//                }
+//            });
+//        } else {
             var fieldDataList = [];
             //fieldDataList = requireTestFieldData();
             $.ajax({
@@ -133,7 +133,7 @@ $(document).ready(function () {
                 }
             });
             // drawTables(fieldDataList);
-        }
+//        }
     });
 
 

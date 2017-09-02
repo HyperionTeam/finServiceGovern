@@ -96,8 +96,8 @@
                                     <thead>
                                     <tr>
                                         <th style="width: 100px;">策略名</th>
-                                        <th>数据分析方案</th>
-                                        <th>治理方案</th>
+                                        <th>问题定位方案</th>
+                                        <th>问题治理方案</th>
                                         <th style="width: 100px;">持久化知识</th>
                                         <th style="width: 95px;">操作</th>
                                     </tr>
@@ -172,7 +172,7 @@
                         <label class="col-sm-4 clue">用于判断是否触发应用的value阀值</label>
                     </div>-->
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">数据分析方案</label>
+                        <label class="col-sm-3 control-label">问题定位方案</label>
                         <div class="col-sm-5">
                             <select class="form-control" id="">
                                 <option>log分类</option>
@@ -180,7 +180,7 @@
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">治理方案</label>
+                        <label class="col-sm-3 control-label">问题治理方案</label>
                         <div class="col-sm-5">
                             <select class="form-control" id="triggerApps">
                             </select>
@@ -221,7 +221,7 @@
                         <!-- <label class="col-sm-4 clue">用于判断是否触发应用的key,*表示任意key</label> -->
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">数据分析方案</label>
+                        <label class="col-sm-3 control-label">问题定位方案</label>
                         <div class="col-sm-5">
                             <select class="form-control" id="analyApp">
                             </select>
@@ -231,7 +231,7 @@
                     <div id="analySubDiv">
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="col-sm-3 control-label">治理方案</label>
+                        <label class="col-sm-3 control-label">问题治理方案</label>
                         <div class="col-sm-5">
                             <select class="form-control" id="triggerApp">
                             </select>
@@ -261,7 +261,7 @@
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    添加服务治理方案
+                    添加方案
                 </h4>
             </div>
             <div class="modal-body">
@@ -278,8 +278,8 @@
                         <label class="col-sm-3 control-label">方案类型</label>
                         <div class="col-sm-5">
                             <select class="form-control" id="applicationStrategyType">
-                                <option>数据分析方案</option>
-                                <option>治理方案</option>
+                                <option>问题定位方案</option>
+                                <option>问题治理方案</option>
                             </select>
                         </div>
                         <label class="col-sm-4 clue">方案具体描述</label>
@@ -395,7 +395,7 @@
 	            <button type="button" class="btn btn-primary btn-xs {{if stype == 1}}modKnowledgeBtn{{else}}modApplicationBtn{{/if}}">修改</button>
 						{{if stype == 1}}
 							<button type="button" class="btn btn-warning btn-xs delKnowledgeBtn">删除</button>
-							<button type="button" class="btn btn-info btn-xs showChartBtn">查看分析结果</button>
+							<button type="button" class="btn btn-info btn-xs showChartBtn">查看历史分析结果</button>
 						{{/if}}
 						</td>
 	        </tr>
@@ -403,7 +403,7 @@
 	      </tbody>
 	    </table>
 	  </div>
-	  <div class="row">
+	  <!--<div class="row">
 	    <div class="col-md-1">
 	    </div>
 	    <div class="col-md-9">
@@ -419,7 +419,7 @@
 	        </ul>
 	      </nav>
 	    </div>
-	  </div>
+	  </div>-->
 
 </script>
 <script id="triggerListTmpl" type="text/x-jquery-tmpl">

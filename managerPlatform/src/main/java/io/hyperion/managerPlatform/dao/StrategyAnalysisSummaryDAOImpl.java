@@ -68,4 +68,26 @@ public class StrategyAnalysisSummaryDAOImpl {
 		return results.getMappedResults();
 	}
 	
+	public StrategyAnalysisSummaryDTO getTheLastestSummary(String key, String triggerName) {
+		Criteria criteria = Criteria.where("key").is(key).and("triggerName").is(triggerName);
+
+		Direction sortDirection = Sort.Direction.DESC;
+		String sortField = "time";
+		Aggregation aggreResult = Aggregation.newAggregation(
+				Aggregation.match(criteria),
+        		Aggregation.sort(sortDirection, sortField),
+        		Aggregation.skip(0),
+        		Aggregation.limit(1)
+        );
+          
+        AggregationResults<StrategyAnalysisSummaryDTO> results = mongoTemplate.aggregate(aggreResult, 
+        		STRATEGY_ANALYSIS_SUMMARY_COL,
+        		StrategyAnalysisSummaryDTO.class);
+        if (results.getMappedResults() != null && results.getMappedResults().size() > 0) {
+        	return results.getMappedResults().get(0);
+        } else {
+        	return null;
+        }
+	}
+	
 }

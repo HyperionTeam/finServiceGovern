@@ -54,8 +54,6 @@ public class StrategyStatController {
 	private KnowledgeStrategyConfigDAO knowledgeStrategyConfigDAO;
 	@Autowired
 	private KnowledgeStrategyBaseInfoDAO knowledgeStrategyBaseInfoDAO;
-	@Autowired
-	private StrategyAnalysisSummaryDAO strategyAnalysisSummaryDAO;
 	
 	/**
 	 * 根据策略key、appID、os、appVersion、triggerName获取统计数据
@@ -368,54 +366,6 @@ public class StrategyStatController {
 			return new ResultInfo(ResponseUtil.success_code, data);
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
-			return new ResultInfo(ResponseUtil.faile_code);
-		}
-	}
-	
-	/**
-	 * 根据策略key、appID、os、appVersion、triggerName获取统计数据
-	 * @param key 数据源
-	 * @param appID
-	 * @param os
-	 * @param appVersion
-	 * @param triggerName
-	 * @param beginTime
-	 * @param endTime
-	 * @return
-	 */
-	@RequestMapping("/getDataListByKeyAndTriggerAndBaseInfo")
-	@ResponseBody
-	public ResultInfo getDataListByKeyAndTriggerAndBaseInfo(String key, String appID, String os, String appVersion, String triggerName, String beginTime, String endTime) {
-		
-		try {
-			
-			if(StringUtils.isBlank(key) || StringUtils.isBlank(beginTime) || StringUtils.isBlank(endTime)) {
-				return new ResultInfo(ResponseUtil.param_error_code);
-			}
-			
-			String adjustBeginTime = CommonUtil.getAdjustTime(beginTime);
-			String adjustEndTime = CommonUtil.getAdjustTime(endTime);
-
-			StrategyAnalysisSummaryVo strategyVo = new StrategyAnalysisSummaryVo();
-			List<Field4SASummaryVo> fieldList = new ArrayList<Field4SASummaryVo>();
-			strategyVo.setKey(key);
-			
-			List<StrategyAnalysisSummaryDTO> strategyAnalysisSummaries = strategyAnalysisSummaryDAO.getStatByKeyAndTriggerAndBaseInfo(key, appID, os, appVersion, triggerName, adjustBeginTime, adjustEndTime);
-                
-            Field4SASummaryVo fieldVo = new Field4SASummaryVo();
-            String chartFieldName = (triggerName != null)?triggerName:ALL_STRATEGY_ITEM_NAME; 
-            fieldVo.setField(chartFieldName); 
-            fieldVo.setCountList(strategyAnalysisSummaries);
-            
-            fieldList.add(fieldVo);
-			
-            strategyVo.setFieldList(fieldList);
-
-			return new ResultInfo(ResponseUtil.success_code, strategyVo);
-		} catch (Exception e) {
-			// TODO: handle exception
-			logger.error(e);
 			e.printStackTrace();
 			return new ResultInfo(ResponseUtil.faile_code);
 		}
