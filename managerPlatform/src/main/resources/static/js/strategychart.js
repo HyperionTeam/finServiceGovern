@@ -77,7 +77,7 @@ $(document).ready(function () {
         if (appVersion != "所有版本号") {
             data['appVersion'] = appVersion;
         }
-        if (triggerName != "所有子策略") {
+        if (triggerName != "所有策略") {
             data['triggerName'] = triggerName;
         }
 
@@ -145,7 +145,7 @@ $(document).ready(function () {
         var beginTime = $('#beginTime').val();
         var endTime = $('#endTime').val();
         var chartDataList = [];
-        if (triggerName == "所有子策略") {
+        if (triggerName == "所有策略") {
             $.ajax({
                 type: 'POST',
                 url: getStatByKeyUrl,
@@ -346,7 +346,7 @@ $(document).ready(function () {
             $('#appVersion').empty();
             $('#appVersion').append("<option>所有版本号</option>");
             $('#triggerStrategyName').empty();
-            $('#triggerStrategyName').append("<option>所有子策略</option>");
+            $('#triggerStrategyName').append("<option>所有策略</option>");
             drawBaseInfoSelection($('#knowledgeStrategyName').val());
             drawTriggerSelection($('#knowledgeStrategyName').val());
 //            drawCharts();

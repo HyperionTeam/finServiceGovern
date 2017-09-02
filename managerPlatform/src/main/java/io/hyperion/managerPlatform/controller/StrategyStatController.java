@@ -46,7 +46,7 @@ public class StrategyStatController {
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	
-	private final static String ALL_STRATEGY_ITEM_NAME = "所有子策略";
+	private final static String ALL_STRATEGY_ITEM_NAME = "所有策略";
 	
 	@Autowired
 	private KnowledgeStrategyStatDAO knowledgeStrategyStatDAO;
