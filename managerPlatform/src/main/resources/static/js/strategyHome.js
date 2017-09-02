@@ -112,10 +112,8 @@ $(document).ready(function () {
                             }
                         }
                     }
-                    if ($('#analyApp').val() == "SQLAnalyser"){
-                        $('#analySubDivTmpl').tmpl({}).appendTo('#analySubDiv');
-                    }
-
+                    console.log($('#triggerApp').val());
+                    console.log($('#analyApp').val());
 
                 } else {
                     alert("get All appData Error,Msg:" + responseObj.msg)
@@ -327,10 +325,10 @@ $(document).ready(function () {
                     var asType = responseObj['data']['strategy']['type'];
                     clearApplicationStrategyModal(true);
                     if (asType == '1') {
-                        $("#applicationStrategyType").val('数据分析方案');
+                        $("#applicationStrategyType").val('问题定位方案');
 
                     } else {
-                        $("#applicationStrategyType").val('治理方案');
+                        $("#applicationStrategyType").val('问题治理方案');
                     }
                     $('#applicationStrategyName').val(asName);
                     $('#applicationStrategyDesc').val(asDesc);
@@ -593,7 +591,7 @@ $(document).ready(function () {
         var applicationSubJson = {};
         applicationSubJson.key = asName;
         applicationSubJson.description = asDesc;
-        if (asType == '数据分析方案') {
+        if (asType == '问题定位方案') {
             applicationSubJson.type = 1
         } else {
             applicationSubJson.type = 0
@@ -623,4 +621,3 @@ $(document).ready(function () {
         });
     })
 });
-
