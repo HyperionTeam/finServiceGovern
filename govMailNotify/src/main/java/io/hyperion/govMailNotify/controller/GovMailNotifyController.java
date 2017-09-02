@@ -9,6 +9,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import io.hyperion.govMailNotify.utils.ResponseUtil;
+import io.hyperion.govMailNotify.utils.ResultInfo;
 
+@RequestMapping("/strategy")
 @RestController
 public class GovMailNotifyController {
     private final Logger logger = Logger.getLogger(getClass());
@@ -37,6 +42,22 @@ public class GovMailNotifyController {
 
     @Value("${spring.mail.username}")
     private String fromMail;
+    
+    
+    @RequestMapping(value = "/mail")
+	@ResponseBody
+	public ResultInfo mail(HttpServletRequest request) {
+		try {
+			String dataAnalysisResult = request.getParameter("dataAnalysisResult");
+			HashMap<String, Object> result = new HashMap<String, Object>();
+			result.put("name", "time out");
+			return new ResultInfo(ResponseUtil.success_code, "已邮件发送给" + toMail);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResultInfo(ResponseUtil.faile_code);
+		}
+	}
     
     
     @RequestMapping(value = "/govMailNotify")

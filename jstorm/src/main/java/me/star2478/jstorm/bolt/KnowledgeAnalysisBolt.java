@@ -1,6 +1,8 @@
 package me.star2478.jstorm.bolt;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -13,7 +15,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +51,12 @@ import me.star2478.jstorm.dto.AppStrategyConfigDTO;
 import me.star2478.jstorm.dto.KnowledgeStrategyConfigDTO;
 import me.star2478.jstorm.dto.KnowledgeStrategyStatDTO;
 import me.star2478.jstorm.dto.StrategyAnalysisSummaryDTO;
+import me.star2478.jstorm.dto.StrategyAnalysisSummaryDTO.EventInfo;
 import me.star2478.jstorm.dto.KnowledgeStrategyConfigDTO.AppStrategyTrigger;
 import me.star2478.jstorm.redis.KnowledgeRedis;
 import me.star2478.jstorm.service.StrategyService;
 import me.star2478.jstorm.service.StrategyServiceFactory;
+import me.star2478.jstorm.service.StrategyService.DataAnalysisStatusEnum;
 import me.star2478.jstorm.service.StrategyService.GovStatusEnum;
 import me.star2478.jstorm.sqlengine.SQLEngine;
 import me.star2478.jstorm.utils.Const;
@@ -88,7 +97,6 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 	 * @return
 	 */
 	public void execute(Tuple input) {
-		
 		try {
 
 			// get source data from message-queue, such as kafka and redis.
@@ -110,7 +118,16 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 			os = (StringUtils.isBlank(os)) ? DEFAULT_VALUE : os;
 			appVersion = (StringUtils.isBlank(appVersion)) ? DEFAULT_VALUE : appVersion;
 
-			Map<String, Object> dataMap = StrategyUtil.json2Map(data);
+			////////////
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			if (key.equals("F_LOG")) {
+				key = "log";
+				dataMap.put("logs", data);
+			} else {
+				dataMap = StrategyUtil.json2Map(data);///////////
+			}
+			////////////
+			
 			// 将dataMap和map部分字段合并到dataMap，如果dataMap中包含了和map一样的key，以map中的value为准
 			StrategyUtil.buildDataMap(dataMap, map);
 
@@ -154,13 +171,17 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 					dataAnalysisResult = DataAnalysisHandler(dataSolution.getCommand(), dataMap);
 					needGov = true;
 				}
+				// 数据分析失败
 				if(dataAnalysisResult == null) {
+					storeDataAnalysisFailResult(strategyAnalysisSummaryDTO, dataAnalysisResult);
 					continue;
 				}
-				// 将分析结果保存下来？？？可以把处理中的状态去掉，节省一次写mongodb
-				storeDataAnalysisResult(strategyAnalysisSummaryDTO, dataAnalysisResult);
+				// 将数据分析成功结果保存下来
+				storeDataAnalysisSucResult(strategyAnalysisSummaryDTO, dataAnalysisResult);
 				// 将分析结果传给治理方案进行治理
 				if (needGov == true) {
+					// ？？？可以把处理中的状态去掉，节省一次写mongodb
+					storeGovDoingStatus(strategyAnalysisSummaryDTO);
 					AppStrategyConfigDTO govSolution = solutions.get(govSolutionName);
 					dataMap.put("dataAnalysisResult", dataAnalysisResult);
 					String govResult = govHandler(govSolution.getCommand(), dataMap);
@@ -186,6 +207,15 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 		declarer.declare(new Fields("data", "appStrategyTrigger", "command", "arrValue"));
 	}
 	
+	private void addEvent(EventInfo eventInfo, StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO) {
+		List<EventInfo> eventInfos = strategyAnalysisSummaryDTO.getEvenList();
+		if(eventInfos == null || eventInfos.size() <= 0) {
+			eventInfos = new ArrayList<EventInfo>();
+		}
+		eventInfos.add(eventInfo);
+		strategyAnalysisSummaryDTO.setEvenList(eventInfos);
+	}
+	
 	private StrategyAnalysisSummaryDTO initStrategyAnalysisSummaryDTO(String key, String strategyName, String sourceData) {
 		StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO = new StrategyAnalysisSummaryDTO();
 		String curTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
@@ -194,26 +224,114 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 		strategyAnalysisSummaryDTO.setTriggerName(strategyName);
 		strategyAnalysisSummaryDTO.setSourceData(sourceData);
 		strategyAnalysisSummaryDTO.setGovernStatus(GovStatusEnum.NOGOV.ordinal());
+		strategyAnalysisSummaryDTO.setDataAnalysisStatus(DataAnalysisStatusEnum.DOING.ordinal());
+		// 插入定位开始事件
+		EventInfo eventInfo4Start = new EventInfo();
+		eventInfo4Start.setEvent(StrategyAnalysisSummaryDTO.EVENT_DATA_ANALYSIS_START);
+		eventInfo4Start.setTime(curTime);
+		eventInfo4Start.setStatus(DataAnalysisStatusEnum.DOING.ordinal());
+		addEvent(eventInfo4Start, strategyAnalysisSummaryDTO);
+		// 插入定位中事件
+		EventInfo eventInfo4Doing = new EventInfo();
+		eventInfo4Doing.setEvent(StrategyAnalysisSummaryDTO.EVENT_DATA_ANALYSIS_DOING);
+		eventInfo4Doing.setTime(curTime);
+		eventInfo4Doing.setStatus(DataAnalysisStatusEnum.DOING.ordinal());
+		addEvent(eventInfo4Doing, strategyAnalysisSummaryDTO);
 		strategyServiceCommon.incNewStrategySummary(strategyAnalysisSummaryDTO);
 		return strategyAnalysisSummaryDTO;
 	}
 	
-	private void storeDataAnalysisResult(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO, String dataResult) {
+	private void storeDataAnalysisSucResult(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO, String dataResult) {
+		String curTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 		strategyAnalysisSummaryDTO.setDataResult(dataResult);
+		strategyAnalysisSummaryDTO.setDataAnalysisStatus(DataAnalysisStatusEnum.SUCCESS.ordinal());
+		// 插入定位成功事件
+		EventInfo eventInfo = new EventInfo();
+		eventInfo.setEvent(StrategyAnalysisSummaryDTO.EVENT_DATA_ANALYSIS_SUCCESS);
+		eventInfo.setTime(curTime);
+		eventInfo.setStatus(DataAnalysisStatusEnum.SUCCESS.ordinal());
+		addEvent(eventInfo, strategyAnalysisSummaryDTO);
+		// 插入定位成功结果事件
+		EventInfo eventInfo4Result = new EventInfo();
+		eventInfo4Result.setEvent(StrategyAnalysisSummaryDTO.EVENT_DATA_ANALYSIS_RESULT + dataResult);
+		eventInfo4Result.setTime(curTime);
+		eventInfo4Result.setStatus(DataAnalysisStatusEnum.SUCCESS.ordinal());
+		addEvent(eventInfo4Result, strategyAnalysisSummaryDTO);
+		strategyServiceCommon.updStrategySummary(strategyAnalysisSummaryDTO);
+	}
+	
+	private void storeDataAnalysisFailResult(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO, String dataResult) {
+		String curTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		strategyAnalysisSummaryDTO.setDataResult(dataResult);
+		strategyAnalysisSummaryDTO.setDataAnalysisStatus(DataAnalysisStatusEnum.FAIL.ordinal());
+		// 插入定位失败事件
+		EventInfo eventInfo = new EventInfo();
+		eventInfo.setEvent(StrategyAnalysisSummaryDTO.EVENT_DATA_ANALYSIS_FAIL);
+		eventInfo.setTime(curTime);
+		eventInfo.setStatus(DataAnalysisStatusEnum.FAIL.ordinal());
+		addEvent(eventInfo, strategyAnalysisSummaryDTO);
+		// 插入定位失败结果事件
+		EventInfo eventInfo4Result = new EventInfo();
+		eventInfo4Result.setEvent(StrategyAnalysisSummaryDTO.EVENT_DATA_ANALYSIS_RESULT + dataResult);
+		eventInfo4Result.setTime(curTime);
+		eventInfo4Result.setStatus(DataAnalysisStatusEnum.FAIL.ordinal());
+		addEvent(eventInfo4Result, strategyAnalysisSummaryDTO);
+		strategyServiceCommon.updStrategySummary(strategyAnalysisSummaryDTO);
+	}
+
+	private void storeGovDoingStatus(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO) {
+		String curTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		// 插入治理开始事件
+		EventInfo eventInfo4Start = new EventInfo();
+		eventInfo4Start.setEvent(StrategyAnalysisSummaryDTO.EVENT_GOV_START);
+		eventInfo4Start.setTime(curTime);
+		eventInfo4Start.setStatus(GovStatusEnum.DOING.ordinal());
+		addEvent(eventInfo4Start, strategyAnalysisSummaryDTO);
+		// 插入治理中事件
+		EventInfo eventInfo4Doing = new EventInfo();
+		eventInfo4Doing.setEvent(StrategyAnalysisSummaryDTO.EVENT_GOV_DOING);
+		eventInfo4Doing.setTime(curTime);
+		eventInfo4Doing.setStatus(DataAnalysisStatusEnum.DOING.ordinal());
+		addEvent(eventInfo4Doing, strategyAnalysisSummaryDTO);
 		strategyAnalysisSummaryDTO.setGovernStatus(GovStatusEnum.DOING.ordinal());
 		strategyServiceCommon.updStrategySummary(strategyAnalysisSummaryDTO);
-//		return strategyAnalysisSummaryDTO;
 	}
 	
 	private void storeGovSucResult(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO, String govResult) {
+		String curTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 		strategyAnalysisSummaryDTO.setGovernResult(govResult);
 		strategyAnalysisSummaryDTO.setGovernStatus(GovStatusEnum.SUCCESS.ordinal());
+		// 插入治理失败事件
+		EventInfo eventInfo = new EventInfo();
+		eventInfo.setEvent(StrategyAnalysisSummaryDTO.EVENT_GOV_SUCCESS);
+		eventInfo.setTime(curTime);
+		eventInfo.setStatus(GovStatusEnum.SUCCESS.ordinal());
+		addEvent(eventInfo, strategyAnalysisSummaryDTO);
+		// 插入治理失败结果事件
+		EventInfo eventInfo4Result = new EventInfo();
+		eventInfo4Result.setEvent(StrategyAnalysisSummaryDTO.EVENT_GOV_RESULT + govResult);
+		eventInfo4Result.setTime(curTime);
+		eventInfo4Result.setStatus(GovStatusEnum.SUCCESS.ordinal());
+		addEvent(eventInfo4Result, strategyAnalysisSummaryDTO);
 		strategyServiceCommon.updStrategySummary(strategyAnalysisSummaryDTO);
 	}
 	
 	private void storeGovFailResult(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO, String govResult) {
+		String curTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 		strategyAnalysisSummaryDTO.setGovernResult(govResult);
 		strategyAnalysisSummaryDTO.setGovernStatus(GovStatusEnum.FAIL.ordinal());
+		// 插入治理失败事件
+		EventInfo eventInfo = new EventInfo();
+		eventInfo.setEvent(StrategyAnalysisSummaryDTO.EVENT_GOV_FAIL);
+		eventInfo.setTime(curTime);
+		eventInfo.setStatus(GovStatusEnum.FAIL.ordinal());
+		addEvent(eventInfo, strategyAnalysisSummaryDTO);
+		// 插入治理失败结果事件
+		EventInfo eventInfo4Result = new EventInfo();
+		eventInfo4Result.setEvent(StrategyAnalysisSummaryDTO.EVENT_GOV_RESULT + govResult);
+		eventInfo4Result.setTime(curTime);
+		eventInfo4Result.setStatus(GovStatusEnum.FAIL.ordinal());
+		addEvent(eventInfo4Result, strategyAnalysisSummaryDTO);
 		strategyServiceCommon.updStrategySummary(strategyAnalysisSummaryDTO);
 	}
 	
@@ -291,7 +409,8 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 	}
 	
 	private String DataAnalysisHandler(String command, Map<String, Object> dataMap) {
-		return CommonHandler(command, dataMap, "dataAnalysis");
+//		return CommonHandler(command, dataMap, "dataAnalysis");
+		return doPost(command, dataMap, "utf-8");
 	}
 	
 	private String govHandler(String command, Map<String, Object> dataMap) {
@@ -315,7 +434,7 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 			for (String field : dataMap.keySet()) {
 				Object value = dataMap.get(field);
 				command = command.replace("{"+field+"}", URLEncoder.encode(String.valueOf(value), "utf-8"));
-			} 
+			}
 			URL urlObj = new URL(command);
 			URLConnection connection = urlObj.openConnection();
 			httpUrlsConnection  =  (HttpURLConnection) connection;
@@ -352,5 +471,55 @@ public class KnowledgeAnalysisBolt extends BaseRichBolt {
 		}
 		return null;
 	}
+	
+	private String doPost(String url, Map<String, Object> params, String charset) {  
+        StringBuffer response = new StringBuffer();  
+        HttpClient client = new HttpClient();  
+        PostMethod method = new PostMethod(url); 
+        // 设置Http Post数据  
+        method.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=" + charset);  
+        if(params != null){  
+            Set<String> keySet = params.keySet();  
+            NameValuePair[] param = new NameValuePair[keySet.size()];  
+            int i = 0;  
+            for(String key : keySet){  
+                param[i] = new NameValuePair(key, (String)params.get(key));  
+                i++;  
+            }  
+            method.setRequestBody(param);  
+        }  
+        InputStream responseBodyStream = null;  
+        InputStreamReader streamReader = null;  
+        BufferedReader reader = null;  
+        try {
+            client.executeMethod(method);
+            if (method.getStatusCode() == HttpStatus.SC_OK) {  
+                responseBodyStream = method.getResponseBodyAsStream();  
+                streamReader = new InputStreamReader(responseBodyStream, charset);  
+                reader = new BufferedReader(streamReader);  
+                String line;
+                while ((line = reader.readLine()) != null) {  
+                    response.append(line);  
+                }  
+            }  
+        } catch (IOException e) {  
+        	logger.error("执行HTTP Post请求" + url + "时，发生异常！");
+            e.printStackTrace();
+            return null;
+        } finally {  
+            try {  
+                responseBodyStream.close();  
+                streamReader.close();  
+                reader.close();  
+            } catch (IOException e) {  
+            	logger.error("执行HTTP Post请求" + url + "时，发生异常，关闭流异常！");
+                e.printStackTrace();  
+            }  
+            method.releaseConnection();  
+        }  
+//        return response.toString(); 
+        JSONObject result = (JSONObject) JSONObject.parse(response.toString());
+        return (result.get("data")!=null)?result.get("data").toString():null;
+    }  
 
 }

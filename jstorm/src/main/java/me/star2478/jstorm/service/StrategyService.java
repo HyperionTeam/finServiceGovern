@@ -46,6 +46,11 @@ public abstract class StrategyService {
         APPID, OS, APPVERSION;
     }
 	
+	// 定位状态：0-定位未触发，1-定位中，2-定位成功，3-定位失败
+	public enum DataAnalysisStatusEnum {
+        NOGOV, DOING, SUCCESS, FAIL;
+    }
+	
 	// 治理状态：0-治理未触发，1-治理中，2-治理成功，3-治理失败
 	public enum GovStatusEnum {
         NOGOV, DOING, SUCCESS, FAIL;

@@ -81,8 +81,10 @@ public class StrategyAnalysisSummaryDAOImpl implements StrategyAnalysisSummaryDA
 		Update update = new Update();
 		update.set("sourceData", dto.getSourceData());
 		update.set("dataResult", dto.getDataResult());
-		update.set("governStatus", dto.getGovernStatus());
+		update.set("dataAnalysisStatus", dto.getDataAnalysisStatus());
 		update.set("governResult", dto.getGovernResult());
+		update.set("governStatus", dto.getGovernStatus());
+		update.set("evenList", dto.getEvenList());
 	    Criteria criteria = Criteria.where("key").is(dto.getKey()).and("triggerName").is(dto.getTriggerName())
 	    		.and("time").is(dto.getTime());
 	    Query query = new Query(criteria);
