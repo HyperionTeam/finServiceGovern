@@ -112,8 +112,10 @@ $(document).ready(function () {
                             }
                         }
                     }
-                    console.log($('#triggerApp').val());
-                    console.log($('#analyApp').val());
+                    if ($('#analyApp').val() == "SQLAnalyser"){
+                        $('#analySubDivTmpl').tmpl({}).appendTo('#analySubDiv');
+                    }
+
 
                 } else {
                     alert("get All appData Error,Msg:" + responseObj.msg)
