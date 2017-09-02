@@ -145,7 +145,20 @@
                    </div>
                    <div class="row">
                         <label class="col-sm-2 control-label" style="text-align: right;">治理状态:</label>
-                        <label class="col-sm-9 control-label">${triggers.governStatus}</label>
+                        <label class="col-sm-9 control-label">
+						{{if triggers.governStatus == 0}}
+							治理未触发
+						{{/if}}
+						{{if triggers.governStatus == 1}}
+						    治理中
+						{{/if}}
+						{{if triggers.governStatus == 2}}
+						    治理成功
+						{{/if}}
+						{{if triggers.governStatus == 3}}
+						    治理失败
+						{{/if}}
+						</label>
                    </div>
                    <div class="row">
                         <label class="col-sm-2 control-label" style="text-align: right;">治理结果:</label>

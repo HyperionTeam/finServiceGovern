@@ -12,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.mail.SimpleMailMessage;
@@ -29,35 +30,45 @@ import com.alibaba.fastjson.JSONObject;
 public class GovMailNotifyController {
     private final Logger logger = Logger.getLogger(getClass());
     
-    private final String fromMail = "hhh@163.com";
-    private final String toMail = "hhh@163.com";
+    private final String toMail = "heliuxing902@pingan.com.cn";
     
     @Autowired
 	private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String fromMail;
+    
     
     @RequestMapping(value = "/govMailNotify")
     public HashMap<String, Object> govMailNotify(@RequestParam String info) {
     	HashMap<String, Object> result = new HashMap<String, Object>();
     	try {
-//    		JSONObject map = JSON.parseObject(info);
-//    		String module = (String) map.get("module");
-    		String to = toMail;	// 收件人
-    		String subject = "服务治理报警邮件";
-//    		String text = module + "错误率过大";
-    		String text = info;
-//    		SimpleMailMessage message = new SimpleMailMessage();
-//    		message.setFrom(fromMail);
-//    		message.setTo(to);
-//    		message.setSubject(subject);
-//    		message.setText(text);
-//    		mailSender.send(message);
+
+    		SimpleMailMessage message = new SimpleMailMessage();
+	        message.setFrom(fromMail);
+	        message.setTo(fromMail); //自己给自己发送邮件
+	        message.setSubject("主题：简单邮件");
+	        message.setText("测试邮件内容");
+	        mailSender.send(message);
     		
-    		SimpleMailMessage message1 = new SimpleMailMessage();
-    		message1.setFrom(fromMail);
-    		message1.setTo(toMail);
-    		message1.setSubject(subject);
-    		message1.setText(text);
-    		mailSender.send(message1);
+    		
+//    		String to = toMail;	// 收件人
+//    		String subject = "服务治理报警邮件";
+////    		String text = module + "错误率过大";
+//    		String text = info;
+////    		SimpleMailMessage message = new SimpleMailMessage();
+////    		message.setFrom(fromMail);
+////    		message.setTo(to);
+////    		message.setSubject(subject);
+////    		message.setText(text);
+////    		mailSender.send(message);
+//    		
+//    		SimpleMailMessage message1 = new SimpleMailMessage();
+//    		message1.setFrom(fromMail);
+//    		message1.setTo(toMail);
+//    		message1.setSubject(subject);
+//    		message1.setText(text);
+//    		mailSender.send(message1);
     		
     		result.put("errno", 0);
     		result.put("message", "SUCCESS");

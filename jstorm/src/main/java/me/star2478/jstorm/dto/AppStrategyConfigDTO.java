@@ -22,12 +22,19 @@ public class AppStrategyConfigDTO {
 	private String description;	//策略说明
 	private String command;	//策略执行命令，相当于回调
 	private String opTime;	//最近操作时间
+	private int type;	// 1-数据分析方案，0-治理方案
 	public String get_id() {
 		return _id;
 	}
 	public void set_id(String _id) {
 		this._id = _id;
 	}
+//	public String getName() {
+//		return name;
+//	}
+//	public void setName(String name) {
+//		this.name = name;
+//	}
 	public String getDescription() {
 		return description;
 	}
@@ -51,6 +58,12 @@ public class AppStrategyConfigDTO {
 	}
 	public void setKey(String key) {
 		this.key = key;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 

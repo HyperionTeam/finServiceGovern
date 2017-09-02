@@ -1,4 +1,4 @@
-package io.hyperion.managerPlatform.dto;
+package me.star2478.jstorm.dto;
 
 import java.util.ArrayList;
 import java.util.List;

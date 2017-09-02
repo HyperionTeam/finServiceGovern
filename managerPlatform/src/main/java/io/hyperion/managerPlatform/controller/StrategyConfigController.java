@@ -66,7 +66,6 @@ public class StrategyConfigController {
 	 * @param request
 	 * @return
 	 */
-	
 	@RequestMapping(value = "/getKnowledgeStrategyByPage", method = RequestMethod.POST)
 	@ResponseBody
 	public ResultInfo getKnowledgeStrategyByPage(HttpServletRequest request) {

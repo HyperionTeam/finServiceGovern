@@ -3,11 +3,11 @@ package me.star2478.jstorm.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+
 
 @Document(collection = "knowledgeStrategyBaseInfo")
 @Component("KnowledgeStrategyBaseInfoDTO")
@@ -16,15 +16,12 @@ import org.springframework.stereotype.Component;
 })
 public class KnowledgeStrategyBaseInfoDTO {
 	
-//	@Id
-    private String _id;
+	private String _id;
 	
 	private String key;	//策略名，全局唯一
 	private String[] APPID;	//app唯一标示
 	private String[] OS;	//操作系统
 	private String[] APPVERSION;	//app版本号
-	
-	
 	public String get_id() {
 		return _id;
 	}

@@ -1,6 +1,5 @@
 package me.star2478.jstorm.dto;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 
- * @author heliuxing
+ * @author chenweixin769
  * 保存统计数据的表
  */
 @Document(collection = "knowledgeStrategyStat")
@@ -18,8 +17,7 @@ import org.springframework.stereotype.Component;
 })
 public class KnowledgeStrategyStatDTO {
 
-//	@Id
-    private String _id;
+	private String _id;
 	private String key;    //对应知识策略的策略名
 	private String triggerName;  //对应AppStrategyTrigger的name，比如说模块名
 	private Object value;    //redis存储的数据
@@ -27,8 +25,6 @@ public class KnowledgeStrategyStatDTO {
 	private String appId;	//app唯一标示
 	private String os;	//操作系统
 	private String appVersion;	//app版本号
-	
-	
 	public String get_id() {
 		return _id;
 	}

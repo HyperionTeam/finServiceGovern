@@ -1,5 +1,6 @@
 package me.star2478.jstorm.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -11,14 +12,19 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.netflix.discovery.converters.Auto;
+
 import me.star2478.jstorm.common.StrategyUtil;
 import me.star2478.jstorm.dao.AppStrategyConfigDAO;
 import me.star2478.jstorm.dao.KnowledgeStrategyBaseInfoDAO;
 import me.star2478.jstorm.dao.KnowledgeStrategyConfigDAO;
 import me.star2478.jstorm.dao.KnowledgeStrategyStatDAO;
+import me.star2478.jstorm.dao.StrategyAnalysisSummaryDAO;
 import me.star2478.jstorm.dto.AppStrategyConfigDTO;
 import me.star2478.jstorm.dto.KnowledgeStrategyConfigDTO;
 import me.star2478.jstorm.dto.KnowledgeStrategyStatDTO;
+import me.star2478.jstorm.dto.StrategyAnalysisSummaryDTO;
+import me.star2478.jstorm.dto.KnowledgeStrategyConfigDTO.AppStrategyTrigger;
 import me.star2478.jstorm.redis.KnowledgeRedis;
 import me.star2478.jstorm.sqlengine.SQLEngine;
 
@@ -38,6 +44,11 @@ public abstract class StrategyService {
 	public final static String REDIS_BASE_INFO_SEPARATOR = ","; // redis中基本信息数据，value值间的分隔符
 	public enum BaseInfoEnum {
         APPID, OS, APPVERSION;
+    }
+	
+	// 治理状态：0-治理未触发，1-治理中，2-治理成功，3-治理失败
+	public enum GovStatusEnum {
+        NOGOV, DOING, SUCCESS, FAIL;
     }
 	
 	public final static String REDIS_BASE_INFO_SUFFIX = "-BaseInfo"; // redis中，基本信息（appId、os、appVersion等）会存入具有此后缀的key中
@@ -81,7 +92,10 @@ public abstract class StrategyService {
 	private KnowledgeStrategyStatDAO knowledgeStrategyStatDAO;
 	
 	@Autowired
-	private AppStrategyConfigDAO AppStrategyConfigDAO;
+	private AppStrategyConfigDAO appStrategyConfigDAO;
+	
+	@Autowired
+	private StrategyAnalysisSummaryDAO strategyAnalysisSummaryDAO;
 	
 	@Autowired
 	protected KnowledgeRedis knowledgeRedis;
@@ -279,7 +293,7 @@ public abstract class StrategyService {
 		// 先从local内存取///////////////
 		
 		// local内存没有，则从mongodb取
-		appStrategyConfig = AppStrategyConfigDAO.getConfigByKey(key);
+		appStrategyConfig = appStrategyConfigDAO.getConfigByKey(key);
 		
 		// 写进local内存///////////////
 		return appStrategyConfig;
@@ -311,6 +325,29 @@ public abstract class StrategyService {
 
 	public void setKnowledgeRedis(KnowledgeRedis knowledgeRedis) {
 		this.knowledgeRedis = knowledgeRedis;
+	}
+	
+	public void incNewStrategySummary(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO) {
+		strategyAnalysisSummaryDAO.incStrategySummary(strategyAnalysisSummaryDTO);
+	}
+	
+	public void updStrategySummary(StrategyAnalysisSummaryDTO strategyAnalysisSummaryDTO) {
+		strategyAnalysisSummaryDAO.updStrategySummary(strategyAnalysisSummaryDTO);
+	}
+	
+	public Map<String, AppStrategyConfigDTO> getAllSolutionsByStrategies(List<AppStrategyTrigger> strategies) {
+		List<String> strategyNameList = new ArrayList<String>();
+		for (AppStrategyTrigger strategy : strategies) {
+			strategyNameList.add(strategy.getDataStrategyName());	// 获取数据分析方案
+			strategyNameList.add(strategy.getAppStrategyName());	// 获取治理方案
+		}
+		List<AppStrategyConfigDTO> appStrategyConfigDTOs = appStrategyConfigDAO.getAllSolutionsByStrategies(strategyNameList);
+		Map<String, AppStrategyConfigDTO> result = new HashMap<String, AppStrategyConfigDTO>();
+		for (AppStrategyConfigDTO appStrategyConfigDTO : appStrategyConfigDTOs) {
+			String key = appStrategyConfigDTO.getKey();
+			result.put(key, appStrategyConfigDTO);
+		}
+		return result;
 	}
 	
 }

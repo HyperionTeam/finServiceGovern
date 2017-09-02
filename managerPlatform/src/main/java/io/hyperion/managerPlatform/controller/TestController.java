@@ -1,5 +1,25 @@
 package io.hyperion.managerPlatform.controller;
-//package org.hyperion.managerPlatform.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sun.javafx.collections.MappingChange.Map;
+
+import io.hyperion.managerPlatform.dto.KnowledgeStrategyConfigDTO;
+import io.hyperion.managerPlatform.utils.ResponseUtil;
+import io.hyperion.managerPlatform.utils.ResultInfo;
+import io.hyperion.managerPlatform.vo.AllKnowledgeStrategyVo;
+import io.hyperion.managerPlatform.vo.AllKnowledgeStrategyVo.AllKnowledgeStrategy;
+
 //
 //import java.io.BufferedReader;
 //import java.io.IOException;
@@ -42,14 +62,14 @@ package io.hyperion.managerPlatform.controller;
 //import com.pingan.fsg.webii.task.SynStrategyBaseInfo;
 //
 //
-///**
-// * 
-// * @author heliuxing
-// *
-// */
-//@Controller
-//@RequestMapping("/fsg/test")
-//public class TestController extends CommonController {
+/**
+ * 
+ * @author heliuxing
+ *
+ */
+@RequestMapping("/strategy")
+@Controller
+public class TestController {
 //	
 //	private final static String TEST_KEY = "test-test";
 //	
@@ -78,6 +98,25 @@ package io.hyperion.managerPlatform.controller;
 //	private KnowledgeRedis<Float> knowledgeRedis;
 //	
 //
+	@RequestMapping(value = "/testAILog")
+	@ResponseBody
+	public ResultInfo testAILog(HttpServletRequest request) {
+		try {
+			String logs = request.getParameter("logs");
+			if(StringUtils.isBlank(logs)){
+				return new ResultInfo(ResponseUtil.param_error_code);
+			}
+			HashMap<String, Object> result = new HashMap<String, Object>();
+			result.put("name", "time out");
+			return new ResultInfo(ResponseUtil.success_code, result);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResultInfo(ResponseUtil.faile_code);
+		}
+	}
+	
+	
 //	@RequestMapping(value = "/testStrategyByHttp", method = RequestMethod.POST)
 //	@ResponseBody
 //	public ModelMap testStrategyByHttp(HttpServletRequest request,
@@ -365,4 +404,4 @@ package io.hyperion.managerPlatform.controller;
 //	public void dccccc(String name, HttpServletRequest request) {
 //		KnowledgeStrategyBaseInfoDAO.dropCol(name);
 //	}
-//}
+}

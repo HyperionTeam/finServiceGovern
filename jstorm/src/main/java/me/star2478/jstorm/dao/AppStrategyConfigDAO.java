@@ -8,6 +8,8 @@ public interface AppStrategyConfigDAO {
 	
 	public AppStrategyConfigDTO getConfigByKey(String key);
 	
+	public List<AppStrategyConfigDTO> getAllSolutionsByStrategies(List<String> strategyNameList);
+	
 //	public long getAppStrategyNumber();
 //	
 //	public List<AppStrategyConfigDTO> getAppStrategyByPage(int skip ,int limit);

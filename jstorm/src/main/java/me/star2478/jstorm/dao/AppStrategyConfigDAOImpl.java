@@ -29,34 +29,10 @@ public class AppStrategyConfigDAOImpl implements AppStrategyConfigDAO {
 		return mongoTemplate.findOne(query, AppStrategyConfigDTO.class);
 	}
 	
-//	@Override
-//	public long getAppStrategyNumber() {
-//		return this._count(null);
-//	}
-//	
-//	@Override
-//	public List<AppStrategyConfigDTO> getAppStrategyByPage(int skip ,int limit) {
-//		Sort sort = new Sort(Sort.Direction.DESC, "opTime");
-//		return this._list(null, skip, limit, sort);
-//	}
-//	
-//	@Override
-//	public void insertAppStrategy(AppStrategyConfigDTO appStrategyConfigDTO) {
-//		this._add(appStrategyConfigDTO);
-//	}
-//	
-//	@Override
-//	public boolean modifyAppStrategy(AppStrategyConfigDTO appStrategyConfigDTO) {
-//		String name = appStrategyConfigDTO.getName();
-//		Update update = new Update();
-//		update.set("description", appStrategyConfigDTO.getDescription());
-//		update.set("command", appStrategyConfigDTO.getCommand());
-//		update.set("opTime", appStrategyConfigDTO.getOpTime());
-//		return this._update(Criteria.where("name").is(name), update);
-//	}
-//	
-//	@Override
-//	public List<AppStrategyConfigDTO> getAllAppStrategy() {
-//		return this._list(null);
-//	}
+	@Override
+	public List<AppStrategyConfigDTO> getAllSolutionsByStrategies(List<String> strategyNameList) {
+		Criteria criteria = new Criteria().where("key").in(strategyNameList);
+		Query query = new Query(criteria);
+		return mongoTemplate.find(query, AppStrategyConfigDTO.class);
+	}
 }
