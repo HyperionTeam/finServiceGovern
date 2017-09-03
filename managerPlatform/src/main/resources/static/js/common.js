@@ -13,6 +13,7 @@ var getAllKnowledeNameUrl = hostUri + "/strategy/getAllPersistentedStrategy";
 var getAllFieldByKeyUrl = hostUri + "/strategy/getAllFieldByKey";
 var getAllTriggersByKeyUrl = hostUri + "/strategy/getAllTriggersByKey";
 var getAllBaseInfoByKeyUrl = hostUri + "/strategy/getAllBaseInfoByKey";
+var getLastestSummaryUrl = hostUri + "/strategy/getLastestSummary";
 var chartHtmlUrl = hostUri + "/chart.html";
 var homeHtmlUrl = hostUri + "/index.html";
 

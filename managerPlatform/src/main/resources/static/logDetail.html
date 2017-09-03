@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>金融服务治理平台</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <style type="text/css">
+        .btn-group {
+            padding: 0;
+        }
+
+        .col-md-6 {
+            padding-right: 0;
+        }
+    </style>
+</head>
+<link rel="stylesheet" type="text/css" href="css/rome.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="javascript:void(0);" id="titleNavbar">金融服务治理平台</a>
+        </div>
+    </div>
+</nav>
+<div id="wrapper">
+    <div id="main" class="container">
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-sm-2" >原始数据:</div>
+            <div class="col-sm-10 control-label" id="originUrl" style="word-break: break-word;"></div>
+        </div>
+        <div class="row">
+
+            <div id="chartDiv">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="triggerModal4AI" tabindex="-1" role="dialog" aria-labelledby="triggerModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    再训练
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="triggerForms">
+                    <div class="form-group form-group-sm">
+                        <label class="col-sm-3 control-label">真实结果</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="col-sm-6 form-control" id="triggerKeys"/>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-sm-8 col-sm-offset-3">如果预测的结果与实际结果有出入,请输入正确的结果,我们将根据正确的结果对模型进行二次训练,提高预测准确率</label>
+
+                    </div>
+                    <div id="persistentSelects">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="triggerSubmitBtn4AI">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script id="triggerListTmpl" type="text/x-jquery-tmpl">
+        <table class="table table-striped" style="margin-top: 20px;">
+	      <thead>
+	        <tr>
+              <th>事件名</th>
+	          <th>事件时间</th>
+	        </tr>
+	      </thead>
+		  <tbody>
+            {{each(i,triggers) eventList}}
+                <tr>
+                    <td>
+                        {{if triggers.status == 0 || triggers.status == 1}}
+                            <label>
+                                ${triggers.event}
+                            </label>
+                        {{/if}}
+                        {{if triggers.status == 2}}
+                            <label style="color: green;">
+                                ${triggers.event}
+                            </label>
+                        {{/if}}
+                        {{if triggers.status == 3}}
+                            <label style="color: red;">
+                                ${triggers.event}
+                            </label>
+                        {{/if}}
+                    </td>
+                    <td>
+                        ${triggers.time}
+                    </td>
+
+                </tr>
+            {{/each}}
+	      </tbody>
+	    </table>
+	    <div class="row">
+           <div class="col-sm-2">
+             <button type="button" class="btn-sm btn-info btn trainingbtn">再训练</button>
+           </div>
+        </div>
+
+
+</script>
+
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery.tmpl.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/highcharts.js"></script>
+<script src="js/rome.js"></script>
+<script src="js/common.js"></script>
+<script src="js/strategylog.js"></script>
+
+</body>
+</html>
