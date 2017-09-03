@@ -40,7 +40,7 @@ public class SmartFixController {
 				return new ResultInfo(ResponseUtil.param_error_code);
 			}
 			String result = null;
-			if (dataAnalysisResult.equals("esbconsumer")) {
+			if (dataAnalysisResult.equals("esbconsumer异常")) {
 				if(ItsmRequest.handle()) {
 					result = "重启esb-consumer成功";
 				} else {

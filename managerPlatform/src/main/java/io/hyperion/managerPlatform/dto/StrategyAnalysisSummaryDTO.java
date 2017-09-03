@@ -39,6 +39,7 @@ public class StrategyAnalysisSummaryDTO {
 	private int governStatus;	// 治理状态：0-治理未触发，1-治理中，2-治理成功，3-治理失败
 	private String governResult;	// 治理结果详情
 	private List<EventInfo> evenList = new ArrayList<EventInfo>();	// 事件列表
+	private List<EventInfo> eventList = new ArrayList<EventInfo>();	// 事件列表/////////////////////////
 	
 	public String get_id() {
 		return _id;
@@ -102,6 +103,15 @@ public class StrategyAnalysisSummaryDTO {
 	public void setEvenList(List<EventInfo> evenList) {
 		this.evenList = evenList;
 	}
+	
+
+	public List<EventInfo> getEventList() {
+		return eventList;
+	}
+	public void setEventList(List<EventInfo> eventList) {
+		this.eventList = eventList;
+	}
+
 
 	public static class EventInfo {
 		private String event;	// 事件

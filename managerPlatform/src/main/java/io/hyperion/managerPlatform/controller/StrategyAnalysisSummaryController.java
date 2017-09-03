@@ -117,7 +117,8 @@ public class StrategyAnalysisSummaryController {
 			}
 			
 			StrategyAnalysisSummaryDTO strategyAnalysisSummary = strategyAnalysisSummaryDAO.getTheLastestSummary(key, triggerName);
-
+			strategyAnalysisSummary.setEventList(strategyAnalysisSummary.getEvenList());
+			
 			return new ResultInfo(ResponseUtil.success_code, strategyAnalysisSummary);
 		} catch (Exception e) {
 			// TODO: handle exception
