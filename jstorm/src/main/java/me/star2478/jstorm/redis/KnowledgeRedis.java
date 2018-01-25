@@ -9,9 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-//
-//import com.pingan.pafa.redis.Redis;
-//import com.pingan.pafa.redis.RedisCommands;
 import org.springframework.stereotype.Component;
 
 import clojure.lang.Obj;

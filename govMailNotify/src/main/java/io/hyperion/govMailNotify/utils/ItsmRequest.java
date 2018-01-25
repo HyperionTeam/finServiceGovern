@@ -2,7 +2,6 @@
  * @author yanyueqiang484
  * @desc LogSiteController
  */
-//package com.pingan.fLogSearch.dmz.controller;
 package io.hyperion.govMailNotify.utils;
 
 import java.io.InputStream;

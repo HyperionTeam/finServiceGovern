@@ -44,22 +44,8 @@ import io.hyperion.managerPlatform.vo.AllKnowledgeStrategyVo.AllKnowledgeStrateg
 //import org.springframework.web.bind.annotation.RequestMethod;
 //import org.springframework.web.bind.annotation.ResponseBody;
 //
-//import com.pingan.fmm.common.ResponseEnum;
 //import com.alibaba.fastjson.JSON;
 //import com.alibaba.fastjson.JSONObject;
-//import com.pingan.fmm.common.CommonController;
-//import com.pingan.fsg.webii.dao.KnowledgeStrategyBaseInfoDAO;
-//import com.pingan.fsg.webii.dao.KnowledgeStrategyConfigDAO;
-//import com.pingan.fsg.webii.dao.KnowledgeStrategyStatDAO;
-//import com.pingan.fsg.webii.dto.KnowledgeStrategyConfigDTO;
-//import com.pingan.fsg.webii.dto.KnowledgeStrategyStatDTO;
-//import com.pingan.fsg.webii.factory.KnowledgeStrategy;
-//import com.pingan.fsg.webii.factory.KnowledgeStrategyFactory;
-//import com.pingan.fsg.webii.form.StrategyCallForm;
-//import com.pingan.fsg.webii.redis.KnowledgeRedis;
-//import com.pingan.fsg.webii.service.KnowledgeStrategyService;
-//import com.pingan.fsg.webii.task.ScanRedis;
-//import com.pingan.fsg.webii.task.SynStrategyBaseInfo;
 //
 //
 /**
@@ -280,8 +266,8 @@ public class TestController {
 //			String host = "devsmtprelay.paic.com.cn";
 //			String user = "pub_dev_mail";
 //			String password = "youjianceshi2009@";		
-//			String from = "ff-app-sg@pingan.com.cn";
-//			String to = "test@pingan.com.cn";
+//			String from = "test@163.com";
+//			String to = "test@163.com";
 //			String subject = "模块异常";
 //			String body = "模块发生异常";
 //			Properties props = new Properties();

@@ -35,7 +35,7 @@ import io.hyperion.govMailNotify.utils.ResultInfo;
 public class GovMailNotifyController {
     private final Logger logger = Logger.getLogger(getClass());
     
-    private final String toMail = "heliuxing902@pingan.com.cn";
+    private final String toMail = "heliuxing24@163.com";
     
     @Autowired
 	private JavaMailSender mailSender;
@@ -120,10 +120,10 @@ public class GovMailNotifyController {
 //	        Transport transport = session.getTransport();  
 //	        // 连接邮件服务器  
 //	        transport.connect("hhh@163.com", "paic1234");
-//	        msg.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress("hhh@pingan.com.cn", "XX用户", "UTF-8"));
+//	        msg.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress("heliuxing24@163.com", "XX用户", "UTF-8"));
 //
 //	        // 发送邮件
-////	        InternetAddress internetAddress = new InternetAddress("hhh@pingan.com.cn");
+////	        InternetAddress internetAddress = new InternetAddress("heliuxing24@163.com");
 ////	        Address address = (Address)internetAddress;
 //	        transport.sendMessage(msg, msg.getAllRecipients());
 //	        // 关闭连接
